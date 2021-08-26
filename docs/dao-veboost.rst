@@ -126,3 +126,52 @@ Querying Balances and Boost Details
             >>> veboost.calc_boost_bias_slope("0xF89501B77b2FA6329F94F5A05FE84cEbb5c8b1a0", 10_000, 1632526995)
             (945874996724549775572359708672, -9559339358802321408)
 
+Working with Boosts
+===================
+
+The following functions can be called by either the delegator or the delegator's operator, however the delegator must have a veCRV balance.
+
+
+.. py:function:: BoostDelegation.create_boost(_delegator: address, _receiver: address, _percentage: int256, _cancel_time: uint256, _expire_time: uint256, _id: uint256): nonpayable
+
+    Create a boost and delegate it to another account.
+
+    Delegated boost can become negative, and requires active management, else the adjusted veCRV balance of the delegator's account will decrease until reaching 0. If a delegator has any outstanding negative boosts, this function will revert.
+
+    * ``_delegator``: The account to delegate boost from
+    * ``_receiver``: The account to receive the delegated boost
+    * ``_percentage``: Since veCRV is a constantly decreasing asset, we use percentage to determine the amount of delegator's boost to delegate. This is a value between (0, 10_000]
+    * ``_cancel_time``: A point in time before _expire_time in which the delegator or their operator can cancel the delegated boost
+    * ``_expire_time``: The point in time, atleast a week in the future, at which the value of the boost will reach 0. After which the negative value is deducted from the delegator's account (and the receiver's received boost only) until it is cancelled. This can't exceed the vecrv lock end time of the delegator
+    * ``_id``: The token id, within the range of [0, 2 ** 96)
+
+        .. code-block:: python
+
+            >>> veboost.create_boost("0xF89501B77b2FA6329F94F5A05FE84cEbb5c8b1a0", "0xF89501B77b2FA6329F94F5A05FE84cEbb5c8b1a0", 10_000, 1629935718, 1655855741, 0)
+
+.. py:function:: BoostDelegation.extend_boost(_token_id: uint256, _percentage: int256, _expire_time: uint256, _cancel_time: uint256): nonpayable
+
+    Extend the boost of an existing or expired boost token
+
+    The extension can not decrease the value of the boost. If there are any outstanding negative value boosts which cause the delegable boost of an account to be negative this call will revert
+
+    * ``_token_id``: The token to extend the boost of
+    * ``_percentage``: The percentage of delegable boost to delegate AFTER burning the token's current boost
+    * ``_expire_time``: The new time at which the boost value will become 0, and eventually negative. Must be greater than the previous expiry time, and atleast a day from now, and less than the veCRV lock expiry of the delegator's account.
+    * ``_cancel_time``:  A point in time before _expire_time in which the delegator or their operator can cancel the delegated boost
+
+        .. code-block:: python
+
+            >>> veboost.extend_boost(112436858509691644084087600949642065935449759732829008227238981820833689763842, 10_000, 1655855741, 1629935718)
+
+.. py:function:: BoostDelegation.cancel_boost(_token_id: uint256): nonpayable
+
+    Cancel an outstanding boost
+
+    This does not burn the token, only the boost it represents. The owner of the token or their operator can cancel a boost at any time. The delegator or their operator can only cancel a token after the cancel time. Anyone can cancel the boost if the value of it is negative.
+
+    * ``_token_id``: The boost token to cancel
+
+        .. code-block:: python
+
+            >>> veboost.cancel_boost(112436858509691644084087600949642065935449759732829008227238981820833689763842)
