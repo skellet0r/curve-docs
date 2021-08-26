@@ -199,6 +199,7 @@ Here is a list of contract deployments that are used in the Curve DAO:
    Minter, `Minter.vy <https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/Minter.vy>`_, `0xd061D61a4d941c39E5453435B6345Dc261C2fcE0 <https://etherscan.io/address/0xd061D61a4d941c39E5453435B6345Dc261C2fcE0#code>`_
    Voting Escrow, `VotingEscrow.vy <https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/VotingEscrow.vy>`_, `0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2 <https://etherscan.io/address/0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2#code>`_
    Vesting Escrow, `VestingEscrow.vy <https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/VestingEscrow.vy>`_, `0x575ccd8e2d300e2377b43478339e364000318e2c <https://etherscan.io/address/0x575ccd8e2d300e2377b43478339e364000318e2c#code>`_
+   Voting Escrow Boost Delegation, `VotingEscrowDelegation.vy <https://github.com/curvefi/curve-veboost/blob/master/contracts/VotingEscrowDelegation.vy>`_, `0xc620aaFD6Caa3Cb7566e54176dD2ED1A81d05655 <https://etherscan.io/address/0xc620aaFD6Caa3Cb7566e54176dD2ED1A81d05655#code>`_
 
 Ownership Proxies
 -----------------
@@ -212,6 +213,7 @@ The following contracts allow DAO ownership of the core Curve AMM contracts:
    Pool Owner, `PoolProxy.vy <https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/PoolProxy.vy>`_, `0xeCb456EA5365865EbAb8a2661B0c503410e9B347 <https://etherscan.io/address/0xeCb456EA5365865EbAb8a2661B0c503410e9B347#code>`_
    Crypto Pool Owner, `CryptoPoolProxy.vy <https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/CryptoPoolProxy.vy>`_, `0x3687367CcAEBBE89f1bc8Eae7592b4Eed44Ac0Bd <https://etherscan.io/address/0x3687367ccaebbe89f1bc8eae7592b4eed44ac0bd>`_
    Factory Pool Owner, `OwnerProxy.vy <https://github.com/curvefi/curve-factory/blob/master/contracts/OwnerProxy.vy>`_, `0x8cf8af108b3b46ddc6ad596aebb917e053f0d72b <https://etherscan.io/address/0x8cf8af108b3b46ddc6ad596aebb917e053f0d72b>`_
+   Delegation Proxy, `DelegationProxy.vy <https://github.com/curvefi/curve-veboost/blob/master/contracts/DelegationProxy.vy>`_, `0x8E0c00ed546602fD9927DF742bbAbF726D5B0d16 <https://etherscan.io/address/0x8E0c00ed546602fD9927DF742bbAbF726D5B0d16>`_
 
 
 .. _addresses-aragon:
