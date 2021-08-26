@@ -175,3 +175,63 @@ The following functions can be called by either the delegator or the delegator's
         .. code-block:: python
 
             >>> veboost.cancel_boost(112436858509691644084087600949642065935449759732829008227238981820833689763842)
+
+.. py:function:: BoostDelegation.batch_cancel_boosts(_token_ids: uint256[256]): nonpayable
+
+    Cancel any outstanding boosts
+
+    If a token in the list is not eligible to be cancelled by the caller, this will revert entirely.
+
+    * ``_token_ids``: A list of 256 token ids to nullify. The list must be padded with 0 values if less than 256 token ids are provided.
+
+        .. code-block:: python
+
+            >>> veboost.batch_cancel_boosts([...])
+
+Blacklisting/Whitelisting
+=========================
+
+The veboost contract makes use of a greylist, which is a per-user white or blacklist. As a blacklist veBoost users can add delegators to this list from which they do not want to receive boost, and as a whitelist, veboost users can add delegators from which they exclusively allow delegations from. Once set, users can't receive veboost tokens who's delegator is not allowed.
+
+.. py:function:: BoostDelegation.grey_list(_receiver: address, _delegator: address) -> bool: view
+
+    Query the ability of a delegator to delegate to a receiver. Determining whether the grey list is in blacklist or whitelist mode can be done by setting the _delegator to the ZERO_ADDRESS. If the result is `False`, the grey list is in blacklist mode, if the result is `True`, the grey list is in whitelist mode. Subsequent queries, like querying whether delegator y, can delegator to receiver x, will be determined based on the state of the greylist. A value of `True` while in blacklist mode means the delegator cannot delegate, a value of `True` while in whitelist mode means the delegator can delegate.
+
+    * ``_receiver``: The receiving address
+    * ``_delegator``: The delegating address
+
+        .. code-block:: python
+
+            >>> veboost.grey_list('0xF89501B77b2FA6329F94F5A05FE84cEbb5c8b1a0', "0x0000000000000000000000000000000000000000")
+            False  # blacklist mode
+            >>> veboost.grey_list('0xF89501B77b2FA6329F94F5A05FE84cEbb5c8b1a0', "0x66aB6D9362d4F35596279692F0251Db635165871")
+            True  # delegator 0x66... cannot delegate to 0xF89...
+
+.. py:function:: BoostDelegation.set_delegation_status(_receiver: address, _delegator: address, _status: bool): nonpayable
+
+    Set or reaffirm the blacklist/whitelist status of a delegator for a receiver.
+
+    Setting delegator as the ZERO_ADDRESS enables users to deactivate delegations globally and enable the white list. The ability of a delegator to delegate to a receiver is determined by ~(grey_list[_receiver][ZERO_ADDRESS] ^ grey_list[_receiver][_delegator]).
+
+    * ``_receiver``: The account which we will be updating it's list
+    * ``_delegator``: The account to disallow/allow delegations from
+    * ``_status``: Boolean of the status to set the _delegator account to
+    
+        .. code-block:: python
+
+            >>> veboost.set_delegation_status('0xF89501B77b2FA6329F94F5A05FE84cEbb5c8b1a0', "0x0000000000000000000000000000000000000000", True)
+
+.. py:function:: BoostDelegation.batch_set_delegation_status(_receiver: address, _delegators: address[256], _statuses: uint256[256]): nonpayable
+
+    Set or reaffirm the blacklist/whitelist status of a delegator for a receiver in batch mode.
+
+    Useful for setting multiple statuses at once, or when switching between blacklist/whitelist mode when previously using either.
+
+    * ``_receiver``: The account which we will be updating it's list
+    * ``_delegator``: List of 256 accounts to disallow/allow delegations from
+    * ``_status``: List of 256 0s and 1s (booleans) of the status to set the _delegator_i account to. if the value is not 0 or 1, execution will break, effectively stopping at the index.
+    
+        .. code-block:: python
+
+            >>> veboost.batch_set_delegation_status('0xF89501B77b2FA6329F94F5A05FE84cEbb5c8b1a0', ["0x66aB6D9362d4F35596279692F0251Db635165871", "0x33A4622B82D4c04a53e170c638B944ce27cffce3", ...], [1, 1, 2, ...])
+
